@@ -2,7 +2,7 @@ const pg = require("pg");
 const Joi = require("joi");
 require("dotenv").config();
 
-const config = {
+const devConfig = {
   host: process.env.DB_HOST,
 
   user: process.env.DB_USER,
@@ -11,8 +11,11 @@ const config = {
   port: process.env.DB_PORT,
   // ssl: true,
 };
+const prodConfig = process.env.DB_CONFIG;
 
-const client = new pg.Client(config);
+const DB_Config = process.env.ENV === "dev" ? devConfig : prodConfig;
+
+const client = new pg.Client(DB_Config);
 client.connect((err) => {
   if (err) throw err;
   else {
