@@ -1,0 +1,8 @@
+#env
+.env
+.env.production
+
+#node_module
+/node_modules
+
+.DS_Store
