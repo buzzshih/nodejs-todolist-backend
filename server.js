@@ -30,6 +30,8 @@ app.post("/api/todos", db.createTodo);
 
 app.put("/api/todos/:id", db.updateTodo);
 
+app.put("/api/todosDone/:id", db.updateTodoDone);
+
 app.delete("/api/todos/:id", db.deleteTodo);
 
 const port = process.env.port || 3000;

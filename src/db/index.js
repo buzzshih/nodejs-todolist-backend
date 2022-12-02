@@ -27,7 +27,8 @@ const queryTodos = `SELECT * FROM public.todolist`;
 const queryTodoById = `SELECT * FROM public.todolist Where id=$1`;
 const createTodoSql = `INSERT INTO todolist (todo) VALUES ($1) RETURNING *`;
 const deleteTodoSql = `DELETE FROM todolist WHERE id = $1`;
-const updateTodoSql = `UPDATE todolist SET  todo=$1  WHERE id=$2`;
+const updateTodoSql = `UPDATE todolist SET  todo=$2  WHERE id=$1`;
+const updateTodoDoneSql = `UPDATE todolist SET  done=$2  WHERE id=$1`;
 
 console.log("process.env.ENV", process.env.ENV);
 
@@ -81,7 +82,6 @@ const deleteTodo = (required, response) => {
 const updateTodo = (required, response) => {
   const { todo } = required.body;
   const id = parseInt(required.params.id);
-  console.log(todo, id);
 
   const schema = Joi.object().keys({
     todo: Joi.string().min(1).required(),
@@ -91,9 +91,28 @@ const updateTodo = (required, response) => {
   const { error } = result;
   if (error) return response.status(400).send(error.details[0].message);
 
-  client.query(updateTodoSql, [todo, id], (error, res) => {
+  client.query(updateTodoSql, [id, todo], (error, res) => {
     if (error) return response.status(400).send(error.message);
     response.status(200).send(`Todos modified with ID: ${id}`);
+    // response.status(200).send(required.params);
+  });
+};
+
+const updateTodoDone = (required, response) => {
+  const { done } = required.body;
+  const id = parseInt(required.params.id);
+
+  const schema = Joi.object().keys({
+    done: Joi.boolean().required(),
+  });
+
+  const result = schema.validate(required.body);
+  const { error } = result;
+  if (error) return response.status(400).send(error.details[0].message);
+
+  client.query(updateTodoDoneSql, [id, done], (error, res) => {
+    if (error) return response.status(400).send(error.message);
+    response.status(200).send(`Todo State modified  with ID: ${id}`);
     // response.status(200).send(required.params);
   });
 };
@@ -103,5 +122,6 @@ module.exports = {
   getTodos,
   getTodoById,
   updateTodo,
+  updateTodoDone,
   deleteTodo,
 };
