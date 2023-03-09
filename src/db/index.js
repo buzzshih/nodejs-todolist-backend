@@ -11,7 +11,7 @@ const devConfig = {
   port: process.env.DB_PORT,
   // ssl: true,
 };
-const prodConfig = process.env.DB_CONFIG;
+const prodConfig = process.env.devConfig;
 
 const DB_Config = process.env.ENV === "dev" ? devConfig : prodConfig;
 
@@ -44,9 +44,7 @@ const getTodoById = (required, response) => {
   client.query(queryTodoById, [id], (error, res) => {
     if (error) return response.status(400).send(error);
     if (res.rows.length < 1)
-      return response
-        .status(404)
-        .send("The id does not exist in the database ");
+      return response.status(404).send("The id does not exist in the database ");
     response.status(200).send(res.rows);
   });
 };
@@ -71,10 +69,7 @@ const deleteTodo = (required, response) => {
   const id = parseInt(required.params.id);
   console.log(id);
   client.query(deleteTodoSql, [id], (error, res) => {
-    if (error)
-      return response
-        .status(400)
-        .send("The id does not exist in the database!");
+    if (error) return response.status(400).send("The id does not exist in the database!");
     response.status(200).send(`Todos deleted with ID: ${id}`);
   });
 };
