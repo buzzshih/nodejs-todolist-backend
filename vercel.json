@@ -3,9 +3,12 @@
     {
       "src": "/api/(.*)",
       "dest": "server.js"
-    },
+    }
+  ],
+  "builds": [
     {
-      "handle": "filesystem"
+      "src": "server.js",
+      "use": "@vercel/node"
     }
   ]
 }
