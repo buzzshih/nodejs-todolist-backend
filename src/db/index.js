@@ -1,6 +1,6 @@
-const pg = require("pg");
-const Joi = require("joi");
-require("dotenv").config();
+const pg = require('pg');
+const Joi = require('joi');
+require('dotenv').config();
 
 const devConfig = {
   host: process.env.DB_HOST,
@@ -11,15 +11,15 @@ const devConfig = {
   port: process.env.DB_PORT,
   // ssl: true,
 };
-const prodConfig = process.env.devConfig;
+const prodConfig = process.env.DB_CONFIG;
 
-const DB_Config = process.env.ENV === "dev" ? devConfig : prodConfig;
+const DB_Config = process.env.ENV === 'dev' ? devConfig : prodConfig;
 
 const client = new pg.Client(DB_Config);
 client.connect((err) => {
   if (err) throw err;
   else {
-    console.log("database is connect !");
+    console.log('database is connect !');
   }
 });
 
@@ -30,7 +30,7 @@ const deleteTodoSql = `DELETE FROM todolist WHERE id = $1`;
 const updateTodoSql = `UPDATE todolist SET  todo=$2  WHERE id=$1`;
 const updateTodoDoneSql = `UPDATE todolist SET  done=$2  WHERE id=$1`;
 
-console.log("process.env.ENV", process.env.ENV);
+console.log('process.env.ENV', process.env.ENV);
 
 const getTodos = (required, response) => {
   client.query(queryTodos, (error, res) => {
@@ -44,7 +44,7 @@ const getTodoById = (required, response) => {
   client.query(queryTodoById, [id], (error, res) => {
     if (error) return response.status(400).send(error);
     if (res.rows.length < 1)
-      return response.status(404).send("The id does not exist in the database ");
+      return response.status(404).send('The id does not exist in the database ');
     response.status(200).send(res.rows);
   });
 };
@@ -69,7 +69,7 @@ const deleteTodo = (required, response) => {
   const id = parseInt(required.params.id);
   console.log(id);
   client.query(deleteTodoSql, [id], (error, res) => {
-    if (error) return response.status(400).send("The id does not exist in the database!");
+    if (error) return response.status(400).send('The id does not exist in the database!');
     response.status(200).send(`Todos deleted with ID: ${id}`);
   });
 };
